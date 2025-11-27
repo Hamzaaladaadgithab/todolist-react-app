@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export default function Todo({ todo, handleCheck }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -195,18 +196,20 @@ export default function Todo({ todo, handleCheck }) {
               {/* check icon button */}
 
               <IconButton
-                onClick={() => {
-                  handleCheckClick();
-                }}
+                onClick={handleCheckClick}
                 className="iconButton"
-                aria-label="delete"
+                aria-label="check"
                 style={{
-                  color: "#1769aa",
-                  background: "white",
+                  color: todo.completed ? "white" : "#1769aa",
+                  background: todo.completed ? "#1769aa" : "white",
                   border: "solid #1769aa 3px",
                 }}
               >
-                <CheckIcon />
+                {todo.completed ? (
+                  <CheckCircleIcon style={{ fontSize: 28 }} />
+                ) : (
+                  <CheckIcon style={{ fontSize: 28 }} />
+                )}
               </IconButton>
 
               {/* check icon button */}
@@ -215,7 +218,7 @@ export default function Todo({ todo, handleCheck }) {
               <IconButton
                 onClick={handleUpdateClick}
                 className="iconButton"
-                aria-label="delete"
+                aria-label="edit"
                 style={{
                   color: "#8bc34a",
                   background: "white",

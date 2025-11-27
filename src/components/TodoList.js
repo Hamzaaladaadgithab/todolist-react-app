@@ -16,7 +16,6 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { useEffect } from "react";
-
 //COMPONENT
 import Todo from "./Todo";
 
@@ -25,6 +24,25 @@ export default function TodoList() {
 
   const [titleInput, setTitleInput] = useState("");
 
+  //filtrealeme için local storage dan verileri çekme
+
+  const [displayedTodosType, setDisplayedTodosType] = useState("all");
+
+  const completedTodos = todos.filter((t) => t.completed);
+  const incompletedTodos = todos.filter((t) => !t.completed);
+
+  let todosToBeRendered = todos;
+
+  if (displayedTodosType === "completed") {
+    todosToBeRendered = completedTodos;
+  } else if (displayedTodosType === "non-completed") {
+    todosToBeRendered = incompletedTodos;
+  } else {
+    todosToBeRendered = todos;
+  }
+
+  const todosJsx = todosToBeRendered.map((t) => <Todo key={t.id} todo={t} />);
+
   useEffect(() => {
     const storageTodos = JSON.parse(localStorage.getItem("todos"));
     if (storageTodos) {
@@ -32,7 +50,11 @@ export default function TodoList() {
     }
   }, [setTodos]);
 
-  const todosJsx = todos.map((t) => <Todo key={t.id} todo={t} />);
+  function changeDisplayedTodosType(event, newType) {
+    setDisplayedTodosType(newType);
+  }
+
+  //filtrealeme için local storage dan verileri çekme
 
   function handleAddClick() {
     const newTodo = {
@@ -52,7 +74,15 @@ export default function TodoList() {
 
   return (
     <Container maxWidth="sm">
-      <Card sx={{ minWidth: 275 }}>
+      <Card
+        sx={{ minWidth: 275 }}
+        style={{
+          maxHeight: "90vh",
+          overflowY: "scroll",
+          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+          borderRadius: "10px",
+        }}
+      >
         <CardContent>
           <Typography variant="h5">Görevlerim</Typography>
           <Divider sx={{ marginY: 2 }} />
@@ -60,25 +90,19 @@ export default function TodoList() {
           {/* filtter buttons */}
 
           <ToggleButtonGroup
-            //value={alignment}
+            value={displayedTodosType}
             exclusive
-            //onChange={handleAlignment}
+            onChange={changeDisplayedTodosType}
             aria-label="text alignment"
           >
-            <ToggleButton value="left" aria-label="left aligned">
-              Bütün
-            </ToggleButton>
+            <ToggleButton value="all">Bütün</ToggleButton>
 
-            <ToggleButton value="center" aria-label="centered">
-              Tamamlanan
-            </ToggleButton>
+            <ToggleButton value="completed">Tamamlanan</ToggleButton>
 
-            <ToggleButton value="left" aria-label="left aligned">
-              Tamamlanmayan
-            </ToggleButton>
+            <ToggleButton value="non-completed">Tamamlanmayan</ToggleButton>
           </ToggleButtonGroup>
 
-          {/*filter  */}
+          {/*filter buttons   */}
 
           {/* all todos  */}
 
@@ -101,10 +125,11 @@ export default function TodoList() {
             <Grid item xs={3}>
               <Button
                 variant="contained"
-                style={{ width: "100%", height: "100%" }}
+                style={{ width: "100%", height: "100%", marginLeft: "15px" }}
                 onClick={() => {
                   handleAddClick();
                 }}
+                disabled={titleInput.trim() === ""}
               >
                 Ekle
               </Button>
