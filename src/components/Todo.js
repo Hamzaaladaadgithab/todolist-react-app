@@ -18,8 +18,12 @@ import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
+import { ToastContext } from "../contexts/ToastContext";
+
 export default function Todo({ todo, handleCheck }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const { showHideToast } = useContext(ToastContext);
 
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [updatedTodo, setUpdateTodo] = useState({
@@ -39,6 +43,7 @@ export default function Todo({ todo, handleCheck }) {
     });
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    showHideToast("Görev durumu güncellendi!");
   }
 
   function handleDeleteDialogClose() {
@@ -67,6 +72,7 @@ export default function Todo({ todo, handleCheck }) {
     setTodos(updatedTodos);
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
     setShowUpdateDialog(false);
+    showHideToast("Görev güncellendi!");
   }
 
   function handleDeleteConfrim() {
@@ -76,6 +82,7 @@ export default function Todo({ todo, handleCheck }) {
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
 
     setShowDeleteDialog(false);
+    showHideToast("Görev silindi!");
   }
 
   // event handler for check button
@@ -98,6 +105,7 @@ export default function Todo({ todo, handleCheck }) {
             Bu işlem geri alinamaz.
           </DialogContentText>
         </DialogContent>
+
 
         <DialogActions>
           <Button onClick={handleDeleteDialogClose}>HAYİR</Button>

@@ -16,11 +16,15 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { useEffect } from "react";
+
+import { ToastContext } from "../contexts/ToastContext";
 //COMPONENT
 import Todo from "./Todo";
 
 export default function TodoList() {
   const { todos, setTodos } = useContext(TodosContext);
+
+  const { showHideToast } = useContext(ToastContext);
 
   const [titleInput, setTitleInput] = useState("");
 
@@ -70,6 +74,8 @@ export default function TodoList() {
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
 
     setTitleInput("");
+
+    showHideToast("Yeni görev eklendi!");
   }
 
   return (
